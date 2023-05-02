@@ -1,10 +1,10 @@
-import React from "react";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
+import React from 'react';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 
-import styles from "./Login.module.scss";
+import styles from './Login.module.scss';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAuth, selectIsAuth } from '../../redux/slices/auth';
@@ -14,12 +14,16 @@ export const Login = () => {
   const isAuth = useSelector(selectIsAuth);
   const dispatch = useDispatch();
 
-  const { register, handleSubmit, setError, formState: { errors, isValid }} = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       email: '',
-      password: ''
+      password: '',
     },
-    mode: 'onChange'
+    mode: 'onChange',
   });
 
   const onSubmit = async (values) => {
@@ -30,7 +34,7 @@ export const Login = () => {
     }
 
     if ('token' in data.payload) {
-      window.localStorage.setItem('token', data.payload.token)
+      window.localStorage.setItem('token', data.payload.token);
     }
   };
 
@@ -60,7 +64,7 @@ export const Login = () => {
           fullWidth
           {...register('password', { required: 'Укажите пароль' })}
         />
-        <Button type='submit' size="large" variant="contained" fullWidth>
+        <Button type="submit" size="large" variant="contained" fullWidth>
           Войти
         </Button>
       </form>
