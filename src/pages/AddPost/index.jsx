@@ -45,11 +45,10 @@ export const AddPost = () => {
   const onSubmit = async () => {
     try {
       setLoading(true);
-      const tagsArray = tags.split(', ');
       const fields = {
         title,
         imageUrl,
-        tags: tagsArray,
+        tags,
         text,
       };
       const { data } = await axios.post('/posts', fields);
