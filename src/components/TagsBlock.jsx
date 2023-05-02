@@ -17,10 +17,11 @@ export const TagsBlock = ({ items, isLoading = true }) => {
       <List>
         {(isLoading ? [...Array(5)] : items).map((name, i) => (
           <Link
-            style={{ textDecoration: "none", color: "black" }}
+            key={name || i}
+            style={{ textDecoration: 'none', color: 'black' }}
             to={`/tags/${name}`}
           >
-            <ListItem key={i} disablePadding>
+            <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <TagIcon />

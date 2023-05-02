@@ -8,12 +8,13 @@ import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts, fetchTags } from '../redux/slices/posts';
-import { LOADING } from '../utils/consts';
+import { LOADING, SERVER_URL } from '../utils/consts';
 
 export const Home = () => {
   const dispatch = useDispatch();
-  const userData = useSelector(state => state.auth.data);
-  const { posts, tags } = useSelector(state => state.posts);
+  const userData = useSelector((state) => state.auth.data);
+  const { posts, tags } = useSelector((state) => state.posts);
+  const getPostImageUrl = (imageUrl) => imageUrl ? `${SERVER_URL}${imageUrl}` : '';
 
   const isPostsLoading = posts.status === LOADING;
   const isTagsLoading = tags.status === LOADING;
@@ -43,9 +44,10 @@ export const Home = () => {
               <Post key={index} isLoading />
             ) : (
               <Post
+                key={post._id}
                 id={post._id}
                 title={post.title}
-                imageUrl={post.imageUrl}
+                imageUrl={getPostImageUrl(post.imageUrl)}
                 user={post.user}
                 createdAt={post.createdAt}
                 viewsCount={post.viewsCount}

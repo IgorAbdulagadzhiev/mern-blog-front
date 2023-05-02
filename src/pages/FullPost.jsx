@@ -5,10 +5,13 @@ import { Post } from '../components/Post';
 import { Index } from '../components/AddComment';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { useParams } from 'react-router-dom';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import { SERVER_URL } from '../utils/consts';
 
 export const FullPost = () => {
   const [post, setPost] = React.useState();
   const [isLoading, setLoading] = React.useState(true);
+  const postImageUrl = post?.imageUrl ? `${SERVER_URL}${post.imageUrl}` : '';
   const { id } = useParams();
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export const FullPost = () => {
       <Post
         id={post._id}
         title={post.title}
-        imageUrl={post.imageUrl}
+        imageUrl={postImageUrl}
         user={post.user}
         createdAt={post.createdAt}
         viewsCount={post.viewsCount}
@@ -42,9 +45,7 @@ export const FullPost = () => {
         tags={post.tags}
         isFullPost
       >
-        <p>
-          {post.text}
-        </p>
+        <ReactMarkdown>{post.text}</ReactMarkdown>
       </Post>
       <CommentsBlock
         items={[
