@@ -12,9 +12,13 @@ import { LOADING } from '../utils/consts';
 
 export const Home = () => {
   const dispatch = useDispatch();
+  const userData = useSelector(state => state.auth.data);
   const { posts, tags } = useSelector(state => state.posts);
+
   const isPostsLoading = posts.status === LOADING;
   const isTagsLoading = tags.status === LOADING;
+  const isAuthor = (authorId) => userData?._id === authorId;
+
   const renderPosts = isPostsLoading ? [...Array(5)] : posts.items;
 
   useEffect(() => {
@@ -48,7 +52,7 @@ export const Home = () => {
                 commentsCount={3}
                 tags={post.tags}
                 isLoading={isPostsLoading}
-                isEditable
+                isEditable={isAuthor(post.user._id)}
               />
             )
           )}
