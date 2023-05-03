@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
@@ -7,11 +7,12 @@ import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 import axios from '../../utils/axios';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsAuth } from '../../redux/slices/auth';
 
 export const AddPost = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const isAuth = useSelector(selectIsAuth);
   const [isLoading, setLoading] = React.useState(false);
@@ -20,6 +21,8 @@ export const AddPost = () => {
   const [tags, setTags] = React.useState('');
   const [imageUrl, setImageUrl] = React.useState('');
   const inputFileRef = useRef(null);
+
+  const isEditing = Boolean(id);
 
   const handleChangeFile = async (event) => {
     try {
@@ -51,16 +54,29 @@ export const AddPost = () => {
         tags,
         text,
       };
-      const { data } = await axios.post('/posts', fields);
+      const { data } = isEditing ? await axios.patch(`posts/${id}`, fields) : await axios.post('/posts', fields);
 
-      const id = data._id;
+      const postId = isEditing ? id : data._id;
 
-      navigate(`/posts/${id}`);
+      navigate(`/posts/${postId}`);
     } catch (error) {
       console.warn(error);
       alert('ошибка создания статьи');
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      axios.get(`/posts/${id}`).then(({ data }) => {
+        setTitle(data.title);
+        setText(data.text);
+        setImageUrl(data.imageUrl);
+        setTags(data.tags.join(', '));
+      }).catch((error) => {
+        console.warn(error);
+      })
+    }
+  }, [])
 
   const options = React.useMemo(
     () => ({
@@ -138,7 +154,7 @@ export const AddPost = () => {
       />
       <div className={styles.buttons}>
         <Button onClick={onSubmit} size="large" variant="contained">
-          Опубликовать
+          { isEditing ? 'Сохранить' : 'Опубликовать' }
         </Button>
         <Link to="/">
           <Button size="large">Отмена</Button>
